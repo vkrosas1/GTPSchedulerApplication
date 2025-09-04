@@ -7,7 +7,7 @@ namespace GTPSchedulerApplication.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TutorsController :ControllerBase
+    public class TutorsController : ControllerBase
     {
         private readonly GTPSchedulerApplicationDbContext _context; 
 
