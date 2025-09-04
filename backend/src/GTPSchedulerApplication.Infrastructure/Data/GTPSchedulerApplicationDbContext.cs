@@ -15,6 +15,12 @@ namespace GTPSchedulerApplication.Infrastructure.Data
         public DbSet<TutorAvailability> TutorAvailabilities { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
 
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder.Properties<TimeOnly>()
+                .HaveConversion<TimeOnlyConverter>();
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure many-to-many relationship
@@ -23,16 +29,13 @@ namespace GTPSchedulerApplication.Infrastructure.Data
 
             // Configure TimeOnly properties (if using .NET 6+)
             modelBuilder.Entity<SchoolClass>()
-                .Property(e => e.StartTime)
-                .HasConversion<TimeSpan>();
+                .Property(e => e.StartTime);
 
             modelBuilder.Entity<TutorAvailability>()
-                .Property(e => e.StartTime)
-                .HasConversion<TimeSpan>();
+                .Property(e => e.StartTime);
 
             modelBuilder.Entity<TutorAvailability>()
-                .Property(e => e.EndTime)
-                .HasConversion<TimeSpan>();
+                .Property(e => e.EndTime);
 
             // Seed data
             modelBuilder.Entity<Subject>().HasData(
