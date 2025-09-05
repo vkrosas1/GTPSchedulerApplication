@@ -9,15 +9,13 @@ namespace GTPSchedulerApplication.Core.Entities
 {
     public class SchoolClass { 
         public int Id { get; set; }
-        /*        public required string SchoolId { get; set; } 
-                public required string SubjectId { get; set; }*/
 
         // Foreign key properties
-        [ForeignKey("School")] // Explicitly tells EF that SchoolId is the FK for the School navigation property
+        [ForeignKey("School")] // SchoolId is the FK for the School navigation property
         public required int SchoolId { get; set; }
-
-        [ForeignKey("Subject")] // Explicitly tells EF that SubjectId is the FK for the Subject navigation property
+        [ForeignKey("Subject")] // SubjectId is the FK for the Subject navigation property
         public required int SubjectId { get; set; }
+
         public DayOfWeek DayOfWeek { get; set; } 
         public TimeOnly StartTime {get; set;}
         public int DurationMinutes {get; set;}
