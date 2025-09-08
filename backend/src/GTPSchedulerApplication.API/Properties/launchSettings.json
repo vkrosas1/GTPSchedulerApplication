@@ -10,5 +10,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
-  }
+  },
+  "launchBrowser": true,
+  "launchUrl": "swagger"
 }
