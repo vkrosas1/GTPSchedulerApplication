@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'https://localhost:7001/api';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
 export const backendApi = axios.create({
     baseURL: BACKEND_API_URL,
@@ -9,6 +9,7 @@ export const backendApi = axios.create({
     },
     // Handle HTTPS certificate issues in development
     ...(process.env.NODE_ENV === 'development' && {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         httpsAgent: new (require('https').Agent)({
             rejectUnauthorized: false
         })
