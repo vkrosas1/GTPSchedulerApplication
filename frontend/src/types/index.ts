@@ -10,7 +10,7 @@ export interface Tutor {
 export interface TutorSubject {
     tutorId: number;
     subjectId: number;
-    proficiencyLevel: number;
+    proficiencyLevel: number; // 0 - 2 (none, >1 year, <=1 year)
     subject: Subject;
 }
 
