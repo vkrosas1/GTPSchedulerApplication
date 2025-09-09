@@ -51,6 +51,22 @@ public class TutorsController : ControllerBase
 
         return tutor == null ? NotFound() : tutor;
     }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Tutor>> DeleteTutor(int id)
+    {
+        var tutor = await _context.Tutors.FindAsync(id);
+        if (tutor != null)
+        {
+            _context.Tutors.Remove(tutor);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+        else
+        {
+            return NotFound($"User with ID {id} not found.");
+        }
+    }
 }
 
 // DTO for API
