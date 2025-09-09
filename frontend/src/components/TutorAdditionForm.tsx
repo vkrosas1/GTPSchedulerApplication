@@ -149,7 +149,12 @@ export default function TutorAdditionForm({ onSubmit }: { onSubmit: any }) {
           </div>
         </div>
 
-        <button type="submit">Submit</button>
+        <button
+          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          type="submit"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );
