@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 import { tutorService } from "@/services/tutorService";
 import { Tutor } from "@/types";
 import { Plus, Mail, BookOpen } from "lucide-react";
@@ -33,7 +33,16 @@ export default function TutorsPage() {
     setFormVisibility(!formVisibility);
   };
 
-  const addTutor = async () => {
+  // getting data from tutorAdditionForm
+  const [tutorInfo, setTutorInfo] =
+    useState<Omit<Tutor, "id" | "tutorSubjects" | "availability">>();
+
+  const handleTutorCreation = (
+    data: Omit<Tutor, "id" | "tutorSubjects" | "availability">
+  ) => {
+    setTutorInfo(data);
+    console.log("Data recieved from child:", data);
+    tutorService.createTutor(data);
     // const data =
   };
 
@@ -66,7 +75,7 @@ export default function TutorsPage() {
         </button>{" "}
       </div>
 
-      {formVisibility && <TutorAdditionForm />}
+      {formVisibility && <TutorAdditionForm onSubmit={handleTutorCreation} />}
       {!formVisibility && tutors.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">No tutors found. Add them! </p>
