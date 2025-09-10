@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, SetStateAction } from "react";
+import Link from "next/link";
 import { tutorService } from "@/services/tutorService";
 import { Tutor } from "@/types";
 import { Plus, Mail, BookOpen } from "lucide-react";
@@ -42,13 +43,12 @@ export default function TutorsPage() {
   ) => {
     try {
       setTutorInfo(data);
-      console.log("Data recieved from child:", data);
-      const newTutor = await tutorService.createTutor(data);
+      await tutorService.createTutor(data);
       tutorFormVisibility();
       loadTutors();
     } catch (error) {
       console.error("Failed to create a tutor", error);
-    } // const data =
+    }
   };
 
   if (loading) {
@@ -91,56 +91,55 @@ export default function TutorsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tutors.map((tutor) => (
-              <div
-                key={tutor.id}
-                className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {tutor.name}
-                  </h3>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      tutor.isActive
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {tutor.isActive ? "Active" : "Inactive"}
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <Mail size={16} />
-                    <span>{tutor.email}</span>
+              <Link key={tutor.id} href={`/tutors/${tutor.id}`}>
+                <div className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {tutor.name}
+                    </h3>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        tutor.isActive
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {tutor.isActive ? "Active" : "Inactive"}
+                    </span>
                   </div>
 
-                  <div className="flex items-start space-x-2 text-sm text-gray-600">
-                    <BookOpen size={16} className="mt-0.5" />
-                    <div>
-                      <span className="font-medium">Subjects:</span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {tutor.tutorSubjects?.map((ts) => (
-                          <span
-                            key={ts.subjectId}
-                            className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs"
-                          >
-                            {ts.subjectName} {/* used to be ts.subject.name*/}
-                          </span>
-                        )) || (
-                          <span className="text-gray-400">No subjects</span>
-                        )}
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                      <Mail size={16} />
+                      <span>{tutor.email}</span>
+                    </div>
+
+                    <div className="flex items-start space-x-2 text-sm text-gray-600">
+                      <BookOpen size={16} className="mt-0.5" />
+                      <div>
+                        <span className="font-medium">Subjects:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {tutor.tutorSubjects?.map((ts) => (
+                            <span
+                              key={ts.subjectId}
+                              className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs"
+                            >
+                              {ts.subjectName} {/* used to be ts.subject.name*/}
+                            </span>
+                          )) || (
+                            <span className="text-gray-400">No subjects</span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">Availability:</span>{" "}
-                    {tutor.availability?.length || 0} time slots
+                    <div className="text-sm text-gray-600">
+                      <span className="font-medium">Availability:</span>{" "}
+                      {tutor.availability?.length || 0} time slots
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ))}
