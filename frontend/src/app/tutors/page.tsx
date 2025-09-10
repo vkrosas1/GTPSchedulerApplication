@@ -126,7 +126,7 @@ export default function TutorsPage() {
                             key={ts.subjectId}
                             className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs"
                           >
-                            {ts.subject.name}
+                            {ts.subjectName} {/* used to be ts.subject.name*/}
                           </span>
                         )) || (
                           <span className="text-gray-400">No subjects</span>

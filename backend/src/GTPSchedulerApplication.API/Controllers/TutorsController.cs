@@ -17,18 +17,8 @@ public class TutorsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<List<Tutor>>> GetTutors()
-    {
-        return await _context.Tutors
-            .Include(t => t.TutorSubjects)
-                .ThenInclude(ts => ts.Subject)
-            .Include(t => t.Availability)
-            .ToListAsync();
-    }
-
     [HttpPost]
-    public async Task<ActionResult<Tutor>> CreateTutor(CreateTutorDto dto)
+    public async Task<ActionResult<TutorDto>> CreateTutor(CreateTutorDto dto)
     {
         var tutor = _mapper.Map<Tutor>(dto);
 
@@ -47,8 +37,20 @@ public class TutorsController : ControllerBase
         return CreatedAtAction(nameof(GetTutor), new { id = tutor.Id }, tutorDto);
     }
 
+    [HttpGet]
+    public async Task<ActionResult<List<TutorDto>>> GetTutors()
+    {
+        var tutors = await _context.Tutors
+            .Include(t => t.TutorSubjects)
+                .ThenInclude(ts => ts.Subject)
+            .Include(t => t.Availability)
+            .ToListAsync();
+
+        return _mapper.Map<List<TutorDto>>(tutors);
+    }
+
     [HttpGet("{id}")]
-    public async Task<ActionResult<Tutor>> GetTutor(int id)
+    public async Task<ActionResult<TutorDto>> GetTutor(int id)
     {
         var tutor = await _context.Tutors
             .Include(t => t.TutorSubjects)
@@ -56,7 +58,7 @@ public class TutorsController : ControllerBase
             .Include(t => t.Availability)
             .FirstOrDefaultAsync(t => t.Id == id);
 
-        return tutor == null ? NotFound() : tutor;
+        return tutor == null ? NotFound() : _mapper.Map<TutorDto>(tutor);
     }
 
     [HttpDelete("{id}")]
@@ -75,8 +77,19 @@ public class TutorsController : ControllerBase
         }
     }
 }
+
+// input DTOs (createTutor)
+public record CreateTutorSubjectDto(int SubjectId, int ProficiencyLevel, string? SubjectName);
+public record CreateTutorAvailabilityDto(DayOfWeek DayOfWeek, TimeOnly StartTime, TimeOnly EndTime);
+public record CreateTutorDto(
+    string Name, 
+    string Email, 
+    List<CreateTutorSubjectDto> TutorSubjects, 
+    List<CreateTutorAvailabilityDto> Availability
+    );
+
 // output DTO for API (GetTutor/after creation)
-public record TutorSubjectDto(int SubjectId, string SubjectName, int ProficiencyLevel);
+public record TutorSubjectDto(int SubjectId, int ProficiencyLevel, string? SubjectName);
 public record TutorAvailabilityDto(DayOfWeek DayOfWeek, TimeOnly StartTime, TimeOnly EndTime);
 public record TutorDto(
     int Id, 
@@ -88,15 +101,6 @@ public record TutorDto(
     );
 
 
-// input DTOs (createTutor)
-public record CreateTutorSubjectDto(int SubjectId, string SubjectName, int ProficiencyLevel);
-public record CreateTutorAvailabilityDto(DayOfWeek DayOfWeek, TimeOnly StartTime, TimeOnly EndTime);
-public record CreateTutorDto(
-    string Name, 
-    string Email, 
-    List<CreateTutorSubjectDto> TutorSubjects, 
-    List<CreateTutorAvailabilityDto> Availability
-    );
 
 
 

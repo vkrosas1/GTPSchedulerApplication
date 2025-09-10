@@ -11,6 +11,7 @@ export interface TutorSubject {
   tutorId: number;
   subjectId: number;
   proficiencyLevel: number; // 0 - 2 (none, >1 year, <=1 year)
+  subjectName: string; // todo: cop out, determine if need to change
   subject: Subject;
 }
 

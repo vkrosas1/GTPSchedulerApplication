@@ -28,7 +28,7 @@ namespace GTPSchedulerApplication.API.UnitTests
                 "viviana@example.com",
                 new List<CreateTutorSubjectDto>
                 {
-                    new(1, "Computer Science", 2)
+                    new(3, 2, "Computer Science")
                 },
                 new List<CreateTutorAvailabilityDto>
                 {
@@ -42,7 +42,7 @@ namespace GTPSchedulerApplication.API.UnitTests
             Assert.Equal(dto.Email, tutor.Email);
             Assert.Single(tutor.TutorSubjects);
             Assert.Single(tutor.Availability);
-            Assert.Equal(1, tutor.TutorSubjects[0].SubjectId);
+            Assert.Equal(3, tutor.TutorSubjects[0].SubjectId);
             Assert.Equal(2, tutor.TutorSubjects[0].ProficiencyLevel);
         }
     }
