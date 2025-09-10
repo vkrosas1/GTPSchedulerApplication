@@ -8,8 +8,7 @@ namespace GTPSchedulerApplication.API.Controllers
         {
             // Entity → DTO
             CreateMap<Tutor, TutorDto>();
-            CreateMap<TutorSubject, TutorSubjectDto>()
-                .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject.Name));
+            CreateMap<TutorSubject, TutorSubjectDto>();
             CreateMap<TutorAvailability, TutorAvailabilityDto>();
 
             // DTO → Entity

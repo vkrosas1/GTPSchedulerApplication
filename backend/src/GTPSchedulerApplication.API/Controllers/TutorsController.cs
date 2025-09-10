@@ -20,7 +20,23 @@ public class TutorsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TutorDto>> CreateTutor(CreateTutorDto dto)
     {
-        var tutor = _mapper.Map<Tutor>(dto);
+        // Look up SubjectId based on subject code 
+        var subjectCodes = dto.TutorSubjects.Select(ts => ts.SubjectCode).ToList();
+        var subjects = await _context.Subjects.Where(s => subjectCodes.Contains(s.Code)).ToDictionaryAsync(s => s.Code, s => s.Id);
+
+        // Build TutorSubjects with correct SubjectId
+        var tutorSubjects = dto.TutorSubjects.Select(ts => new TutorSubject
+        {
+            SubjectId = subjects[ts.SubjectCode],
+            ProficiencyLevel = ts.ProficiencyLevel,
+        }).ToList();
+
+        var tutor = new Tutor
+        {
+            Name = dto.Name,
+            Email = dto.Email,
+            TutorSubjects = tutorSubjects,
+        };
 
         _context.Tutors.Add(tutor);
         await _context.SaveChangesAsync();
@@ -79,13 +95,13 @@ public class TutorsController : ControllerBase
 }
 
 // input DTOs (createTutor)
-public record CreateTutorSubjectDto(int SubjectId, int ProficiencyLevel, string? SubjectName);
+public record CreateTutorSubjectDto(string SubjectCode, int ProficiencyLevel, string? SubjectName);
 public record CreateTutorAvailabilityDto(DayOfWeek DayOfWeek, TimeOnly StartTime, TimeOnly EndTime);
 public record CreateTutorDto(
     string Name, 
     string Email, 
     List<CreateTutorSubjectDto> TutorSubjects, 
-    List<CreateTutorAvailabilityDto> Availability
+    List<CreateTutorAvailabilityDto>? Availability
     );
 
 // output DTO for API (GetTutor/after creation)
@@ -97,7 +113,7 @@ public record TutorDto(
     string Email, 
     bool IsActive, 
     List<TutorSubjectDto> TutorSubjects, 
-    List<TutorAvailabilityDto> Availability
+    List<TutorAvailabilityDto>? Availability
     );
 
 

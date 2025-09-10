@@ -12,12 +12,12 @@ export interface TutorSubject {
   subjectId: number;
   proficiencyLevel: number; // 0 - 2 (none, >1 year, <=1 year)
   subjectName: string; // todo: cop out, determine if need to change
-  subject: Subject;
+  // subject: Subject;
 }
 
 export interface Subject {
-  id: number;
-  name: string;
+  // id: number; should get this from backend
+  // name: string; // only need visual name on frontend, no need to interface
   code: string;
 }
 

@@ -19,18 +19,18 @@ export default function TutorAdditionForm({ onSubmit }: { onSubmit: any }) {
     setSubjects(selected);
   };
 
+  const tutorSubjects = subjects.map((code) => ({
+    subjectCode: code,
+    proficiencyLevel: parseInt(proficiency[0]),
+  }));
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const tutorData = {
       name,
       email,
       isActive: true,
-      tutorSubjects: subjects.map((subject) => ({
-        subject: { name: subject, code: subject, id: 0 },
-        proficiencyLevel: parseInt(proficiency[0]),
-        tutorId: 0,
-        subjectId: 0,
-      })),
+      tutorSubjects,
       availability: [], // TODO: collect from Availability component
     };
     onSubmit(tutorData);
@@ -93,9 +93,9 @@ export default function TutorAdditionForm({ onSubmit }: { onSubmit: any }) {
               value={subjects}
               onChange={handleSubjectsChange}
             >
-              <option>Computer Science</option>
-              <option>Physics</option>
-              <option>Biology</option>
+              <option value="CS">Computer Science</option>
+              <option value="PHY">Physics</option>
+              <option value="BIO">Biology</option>
             </select>
           </div>
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -115,28 +115,6 @@ export default function TutorAdditionForm({ onSubmit }: { onSubmit: any }) {
               <option>1: Less than a year</option>
               <option>2: Can teach</option>
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg
-                className="fill-current h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        {/* day availability */}
-        <div className="flex flex-wrap -mx-3 mb-6">
-          <div className="w-full px-3">
-            <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="availability"
-            >
-              Availability
-            </label>
-            <Availability />
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
               <svg
                 className="fill-current h-4 w-4"

@@ -13,7 +13,7 @@ namespace GTPSchedulerApplication.API.UnitTests
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<TutorProfile>(); // Your AutoMapper profile
+                cfg.AddProfile<TutorProfile>(); // AutoMapper profile
             });
 
             config.AssertConfigurationIsValid(); // Throws if any mapping is misconfigured
@@ -28,7 +28,7 @@ namespace GTPSchedulerApplication.API.UnitTests
                 "viviana@example.com",
                 new List<CreateTutorSubjectDto>
                 {
-                    new(3, 2, "Computer Science")
+                    new("CS", 2, "Computer Science")
                 },
                 new List<CreateTutorAvailabilityDto>
                 {

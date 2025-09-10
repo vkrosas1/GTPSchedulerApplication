@@ -35,10 +35,10 @@ export default function TutorsPage() {
 
   // getting data from tutorAdditionForm
   const [tutorInfo, setTutorInfo] =
-    useState<Omit<Tutor, "id" | "tutorSubjects" | "availability">>();
+    useState<Omit<Tutor, "id" | "availability">>();
 
   const handleTutorCreation = async (
-    data: Omit<Tutor, "id" | "tutorSubjects" | "availability">
+    data: Omit<Tutor, "id" | "availability">
   ) => {
     try {
       setTutorInfo(data);
