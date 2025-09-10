@@ -1,17 +1,12 @@
-import Form from "next/form";
-import React, { useEffect, useState } from "react";
-import Availability from "@/components/Availability";
-import { tutorService } from "@/services/tutorService";
-// How to get selected courses for form submission
+import { useState, ChangeEvent, FormEvent } from "react";
 
 export default function TutorAdditionForm({ onSubmit }: { onSubmit: any }) {
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [subjects, setSubjects] = React.useState<string[]>([]);
-  const [proficiency, setProficiency] = React.useState("0: No experience");
-  // TODO: Add state for availability if needed
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subjects, setSubjects] = useState<string[]>([]);
+  const [proficiency, setProficiency] = useState("0: No experience");
 
-  const handleSubjectsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSubjectsChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selected = Array.from(
       e.target.selectedOptions,
       (option) => option.value
@@ -24,14 +19,13 @@ export default function TutorAdditionForm({ onSubmit }: { onSubmit: any }) {
     proficiencyLevel: parseInt(proficiency[0]),
   }));
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const tutorData = {
       name,
       email,
       isActive: true,
       tutorSubjects,
-      availability: [], // TODO: collect from Availability component
     };
     onSubmit(tutorData);
   };
