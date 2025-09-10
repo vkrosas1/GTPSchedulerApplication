@@ -35,10 +35,10 @@ export default function TutorsPage() {
 
   // getting data from tutorAdditionForm
   const [tutorInfo, setTutorInfo] =
-    useState<Omit<Tutor, "id" | "tutorSubjects" | "availability">>();
+    useState<Omit<Tutor, "id" | "availability">>();
 
   const handleTutorCreation = async (
-    data: Omit<Tutor, "id" | "tutorSubjects" | "availability">
+    data: Omit<Tutor, "id" | "availability">
   ) => {
     try {
       setTutorInfo(data);
@@ -126,7 +126,7 @@ export default function TutorsPage() {
                             key={ts.subjectId}
                             className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs"
                           >
-                            {ts.subject.name}
+                            {ts.subjectName} {/* used to be ts.subject.name*/}
                           </span>
                         )) || (
                           <span className="text-gray-400">No subjects</span>

@@ -1,3 +1,4 @@
+using GTPSchedulerApplication.API.Controllers;
 using GTPSchedulerApplication.Infrastructure.Data;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,9 @@ builder.Services.AddOpenApi(); // to facilitate documentation
 // Add db context 
 builder.Services.AddDbContext<GTPSchedulerApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add automapper for entities
+builder.Services.AddAutoMapper(typeof(TutorProfile));
 
 // Add CORS for frontend 
 builder.Services.AddCors(options =>
