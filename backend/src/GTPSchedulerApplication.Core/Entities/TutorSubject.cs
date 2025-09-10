@@ -10,7 +10,7 @@ namespace GTPSchedulerApplication.Core.Entities
     {
         public int TutorId { get; set; }
         public int SubjectId { get; set; }
-        public int ProficiencyLevel { get; set; } // 1-5 scale
+        public int ProficiencyLevel { get; set; } // 0-2 scale
 
         public Tutor Tutor { get; set; } = null!;
         public Subject Subject { get; set; } = null!;

@@ -1,18 +1,20 @@
-﻿using GTPSchedulerApplication.Core.Entities;
+﻿using AutoMapper;
+using GTPSchedulerApplication.Core.Entities;
 using GTPSchedulerApplication.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 
 [ApiController]
 [Route("api/[controller]")]
 public class TutorsController : ControllerBase
 {
     private readonly GTPSchedulerApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public TutorsController(GTPSchedulerApplicationDbContext context)
+    public TutorsController(GTPSchedulerApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -28,16 +30,21 @@ public class TutorsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Tutor>> CreateTutor(CreateTutorDto dto)
     {
-        var tutor = new Tutor
-        {
-            Name = dto.Name,
-            Email = dto.Email
-        };
+        var tutor = _mapper.Map<Tutor>(dto);
 
         _context.Tutors.Add(tutor);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetTutor), new { id = tutor.Id }, tutor);
+        // Fetch the tutor with navigation properties for mapping to DTO
+        var createdTutor = await _context.Tutors
+            .Include(t => t.TutorSubjects)
+                .ThenInclude(ts => ts.Subject)
+            .Include(t => t.Availability)
+            .FirstOrDefaultAsync(t => t.Id == tutor.Id);
+
+        var tutorDto = _mapper.Map<TutorDto>(createdTutor);
+
+        return CreatedAtAction(nameof(GetTutor), new { id = tutor.Id }, tutorDto);
     }
 
     [HttpGet("{id}")]
@@ -68,8 +75,28 @@ public class TutorsController : ControllerBase
         }
     }
 }
+// output DTO for API (GetTutor/after creation)
+public record TutorSubjectDto(int SubjectId, string SubjectName, int ProficiencyLevel);
+public record TutorAvailabilityDto(DayOfWeek DayOfWeek, TimeOnly StartTime, TimeOnly EndTime);
+public record TutorDto(
+    int Id, 
+    string Name, 
+    string Email, 
+    bool IsActive, 
+    List<TutorSubjectDto> TutorSubjects, 
+    List<TutorAvailabilityDto> Availability
+    );
 
-// DTO for API
-public record CreateTutorDto(string Name, string Email);
+
+// input DTOs (createTutor)
+public record CreateTutorSubjectDto(int SubjectId, string SubjectName, int ProficiencyLevel);
+public record CreateTutorAvailabilityDto(DayOfWeek DayOfWeek, TimeOnly StartTime, TimeOnly EndTime);
+public record CreateTutorDto(
+    string Name, 
+    string Email, 
+    List<CreateTutorSubjectDto> TutorSubjects, 
+    List<CreateTutorAvailabilityDto> Availability
+    );
+
 
 
