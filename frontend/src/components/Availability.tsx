@@ -1,7 +1,7 @@
 import { DayAvailability } from "@/types";
 import { useState } from "react";
 
-const Availability = () => {
+const Availability = ({ onSendAvailability }: { onSendAvailability: any }) => {
   const [availability, setAvailability] = useState<DayAvailability[]>([
     { day: "Monday", enabled: false, startTime: "09:00", endTime: "17:00" },
     { day: "Tuesday", enabled: false, startTime: "09:00", endTime: "17:00" },
@@ -30,6 +30,7 @@ const Availability = () => {
           : day
       )
     );
+    onSendAvailability(availability);
   };
 
   return (

@@ -58,6 +58,13 @@ export default function EditableTutorForm({ currentTutor }: Props) {
     (sub) => !tutorSubjects.some((sel) => sel.subjectId === sub.id)
   );
 
+  /* Availability INformation */
+  const handleAvailabilityData = (data: []) => {
+    setAvailability(data);
+    // testing ONLY
+    console.log("Received from child: ", data);
+  };
+
   /* PUT action */
   const onHandleUpdate = async () => {
     try {
@@ -67,6 +74,7 @@ export default function EditableTutorForm({ currentTutor }: Props) {
         email: email,
         isActive: status,
         tutorSubjects: tutorSubjects,
+        availability: availability,
       };
       await tutorService.updateTutor(currentTutor.id, updateFields);
       //setStatus("Updated successfully!");
@@ -172,7 +180,7 @@ export default function EditableTutorForm({ currentTutor }: Props) {
           >
             Availability
           </label>
-          <Availability />
+          <Availability onSendAvailability={handleAvailabilityData} />
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
             <svg
               className="fill-current h-4 w-4"
