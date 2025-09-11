@@ -10,6 +10,7 @@ public class TutorsController : ControllerBase
 {
     private readonly GTPSchedulerApplicationDbContext _context;
     private readonly IMapper _mapper;
+    // private readonly ILogger _logger;
 
     public TutorsController(GTPSchedulerApplicationDbContext context, IMapper mapper)
     {
@@ -68,13 +69,18 @@ public class TutorsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TutorDto>> GetTutor(int id)
     {
-        var tutor = await _context.Tutors
+        try
+        {
+            var tutor = await _context.Tutors
             .Include(t => t.TutorSubjects)
             .ThenInclude(ts => ts.Subject)
             .Include(t => t.Availability)
             .FirstOrDefaultAsync(t => t.Id == id);
-
-        return tutor == null ? NotFound() : _mapper.Map<TutorDto>(tutor);
+            return tutor == null ? NotFound() : _mapper.Map<TutorDto>(tutor);
+        }
+        catch (Exception ex) {
+            throw new ApplicationException("Internal error");
+        }
     }
 
     [HttpDelete("{id}")]

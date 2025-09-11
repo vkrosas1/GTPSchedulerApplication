@@ -1,7 +1,7 @@
 import { DayAvailability } from "@/types";
-import React, { useState } from "react";
+import { useState } from "react";
 
-const Availability: React.FC = () => {
+const Availability = () => {
   const [availability, setAvailability] = useState<DayAvailability[]>([
     { day: "Monday", enabled: false, startTime: "09:00", endTime: "17:00" },
     { day: "Tuesday", enabled: false, startTime: "09:00", endTime: "17:00" },
