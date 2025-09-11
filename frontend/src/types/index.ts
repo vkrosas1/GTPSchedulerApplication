@@ -15,6 +15,8 @@ export interface TutorSubject {
 }
 
 export interface Subject {
+  id: number;
+  name: string;
   code: string;
 }
 

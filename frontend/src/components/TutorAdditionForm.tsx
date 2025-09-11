@@ -4,7 +4,7 @@ export default function TutorAdditionForm({ onSubmit }: { onSubmit: any }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subjects, setSubjects] = useState<string[]>([]);
-  const [proficiency, setProficiency] = useState("0: No experience");
+  const [proficiency, setProficiency] = useState("0");
 
   const handleSubjectsChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selected = Array.from(
