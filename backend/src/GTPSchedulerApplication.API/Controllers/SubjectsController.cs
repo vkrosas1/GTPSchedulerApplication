@@ -23,7 +23,7 @@ namespace GTPSchedulerApplication.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("subjects")]
+        [HttpGet]
         public async Task<ActionResult<List<SubjectDto>>> GetSubjects()
         {
             var subjects = await _context.Subjects

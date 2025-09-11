@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { tutorService } from "@/services/tutorService";
 import { Tutor, Subject, TutorSubject } from "../types";
 import { CirclePlus, CircleX } from "lucide-react";
 import Availability from "@/components/Availability";
+import { tutorService } from "@/services/tutorService";
 import { subjectService } from "@/services/subjectService";
 
 type Props = {
@@ -13,14 +13,25 @@ type Props = {
 
 export default function EditableTutorForm({ currentTutor }: Props) {
   const [email, setEmail] = useState(currentTutor.email);
-  const [status, setStatus] = useState("");
-  const [subject, setSubject] = useState(currentTutor.tutorSubjects);
+  const [status, setStatus] = useState(currentTutor.isActive);
   const [subjectVisibility, setSubjectVisibility] = useState<boolean>(false);
   const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
-  const [selectedSubjects, setSelectedSubjects] = useState<Subject[]>([]);
+  // REMOVE REDUDANCY const [selectedSubjects, setSelectedSubjects] = useState<Subject[]>([]);
+
+  // Local state for tutorSubjects
+  const [tutorSubjects, setTutorSubjects] = useState<TutorSubject[]>(
+    currentTutor.tutorSubjects || []
+  );
+
+  const statusChange = () => {
+    setStatus(!status);
+  };
 
   const removeSubject = (ts: TutorSubject) => {
-    setSelectedSubjects((prev) => prev.filter((s) => s.id !== ts.subjectId));
+    setTutorSubjects((prev) => {
+      var filtered = prev.filter((s) => s.subjectId !== ts.subjectId);
+      return filtered;
+    });
   };
 
   useEffect(() => {
@@ -41,16 +52,18 @@ export default function EditableTutorForm({ currentTutor }: Props) {
   };
 
   const availableOptions = allSubjects.filter(
-    (sub) => !selectedSubjects.some((sel) => sel.id === sub.id)
+    (sub) => !tutorSubjects.some((sel) => sel.subjectId === sub.id)
   );
 
   const handleUpdate = async () => {
     try {
       subjectOptionVisibility();
-      await tutorService.updateTutor(currentTutor.id, { email });
-      setStatus("Updated successfully!");
+      var updateFields = { email: email, isActive: status };
+      await tutorService.updateTutor(currentTutor.id, updateFields);
+      //setStatus("Updated successfully!");
     } catch (err) {
-      setStatus("Update failed.");
+      //setStatus("Update failed.");
+      console.error(err);
     }
   };
 
@@ -60,7 +73,14 @@ export default function EditableTutorForm({ currentTutor }: Props) {
         <h1 className="text-3xl font-bold text-gray-900">
           {currentTutor.name}
         </h1>
-        <p>{status}</p>
+        <button
+          onClick={statusChange}
+          className={`px-2 py-1 rounded-full text-xs font-medium ${
+            status ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+          }`}
+        >
+          {status ? "Active" : "Inactive"}
+        </button>
       </div>
       <div className="flex flex-col mb-4">
         <label className="text-lg font-semibold text-gray-900">
@@ -84,23 +104,26 @@ export default function EditableTutorForm({ currentTutor }: Props) {
           )}
           {subjectVisibility && (
             <select
+              className="ml-4 appearance-none bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               onChange={(e) => {
                 const subjectId = parseInt(e.target.value);
                 const subject = allSubjects.find((s) => s.id === subjectId);
                 if (subject) {
-                  setSelectedSubjects((prev) => [
+                  setTutorSubjects((prev) => [
                     ...prev,
                     {
-                      id: subject.id,
-                      name: subject.name,
-                      code: subject.code,
-                    },
+                      tutorId: currentTutor.id,
+                      subjectId: subject.id,
+                      proficiencyLevel: 2, // or set a default/ask user
+                      subjectName: subject.name,
+                    } as TutorSubject,
                   ]);
                 }
               }}
             >
-              <option value="">Select a subject</option>
-              {availableOptions.map((s) => (
+              <option>Select an option </option>
+              {/* Option selections below*/}
+              {availableOptions.map((s: Subject) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
@@ -110,7 +133,7 @@ export default function EditableTutorForm({ currentTutor }: Props) {
         </label>
 
         <div className="flex flex-wrap gap-1 mt-1">
-          {currentTutor.tutorSubjects?.map((ts) => (
+          {tutorSubjects?.map((ts) => (
             <span
               key={ts.subjectId}
               className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs"

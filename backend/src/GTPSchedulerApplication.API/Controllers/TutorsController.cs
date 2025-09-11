@@ -98,6 +98,20 @@ public class TutorsController : ControllerBase
             return NotFound($"User with ID {id} not found.");
         }
     }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchTutor(int id, UpdateTutorPartialDto dto)
+    {
+        var tutor = await _context.Tutors.FindAsync(id);
+        if (tutor == null) return NotFound();
+
+        if (dto.Email is not null) tutor.Email = dto.Email;
+        if (dto.IsActive.HasValue) tutor.IsActive = dto.IsActive.Value;
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
 }
 
 // input DTOs (createTutor)
@@ -121,6 +135,12 @@ public record TutorDto(
     List<TutorSubjectDto> TutorSubjects, 
     List<TutorAvailabilityDto>? Availability
     );
+public class UpdateTutorPartialDto
+{
+    public string? Email { get; set; }
+    public bool? IsActive { get; set; }
+}
+
 
 
 

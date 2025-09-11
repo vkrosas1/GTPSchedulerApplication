@@ -20,7 +20,7 @@ export const tutorService = {
   },
 
   updateTutor: async (id: number, tutor: Partial<Tutor>): Promise<Tutor> => {
-    const response = await backendApi.put(`/tutors/${id}`, tutor);
+    const response = await backendApi.patch(`/tutors/${id}`, tutor);
     return response.data;
   },
 
