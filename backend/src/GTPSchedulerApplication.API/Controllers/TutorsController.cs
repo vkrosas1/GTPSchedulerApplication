@@ -99,8 +99,8 @@ public class TutorsController : ControllerBase
         }
     }
 
-    [HttpPatch("{id}")]
-    public async Task<IActionResult> PatchTutor(int id, UpdateTutorPartialDto dto)
+    [HttpPatch("{id}")] // only name and active status
+    public async Task<ActionResult> PatchTutor(int id, UpdateTutorPartialDto dto)
     {
         var tutor = await _context.Tutors.FindAsync(id);
         if (tutor == null) return NotFound();
@@ -108,6 +108,54 @@ public class TutorsController : ControllerBase
         if (dto.Email is not null) tutor.Email = dto.Email;
         if (dto.IsActive.HasValue) tutor.IsActive = dto.IsActive.Value;
 
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateTutor(int id, UpdateTutorDto dto)
+    {
+        if (id != dto.Id) return BadRequest("ID mismatch");
+
+        var tutor = await _context.Tutors
+            .Include(t => t.TutorSubjects)
+            .Include(t => t.Availability)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (tutor == null) return NotFound();
+
+        // Update scalar fields
+        tutor.Email = dto.Email;
+        tutor.IsActive = dto.IsActive;
+
+        // Replace subjects
+        tutor.TutorSubjects.Clear();
+
+        // Look up SubjectCode based on subject name 
+        var subjectNames = dto.TutorSubjects.Select(ts => ts.SubjectName).ToList();
+        var subjects = await _context.Subjects.Where(s => subjectNames.Contains(s.Name)).ToDictionaryAsync(s => s.Name, s => s.Id);
+
+        tutor.TutorSubjects.AddRange(dto.TutorSubjects.Select(s => new TutorSubject
+        {
+            SubjectId = subjects[s.SubjectName],
+            ProficiencyLevel = s.ProficiencyLevel
+        }));
+        
+        
+
+        /* Replace availability if not null
+        if (tutor.Availability != null)
+        {
+        tutor.Availability.Clear();
+        tutor.Availability.AddRange(dto.Availability.Select(a => new TutorAvailability
+        {
+            DayOfWeek = a.DayOfWeek,
+            StartTime = a.StartTime,
+            EndTime = a.EndTime
+        })); 
+
+        }
+        */
         await _context.SaveChangesAsync();
         return NoContent();
     }
@@ -140,6 +188,14 @@ public class UpdateTutorPartialDto
     public string? Email { get; set; }
     public bool? IsActive { get; set; }
 }
+public record UpdateTutorDto(
+    int Id,
+    string Email,
+    bool IsActive,
+    List<TutorSubjectDto> TutorSubjects
+    //List<CreateTutorAvailabilityDto>? Availability
+);
+
 
 
 

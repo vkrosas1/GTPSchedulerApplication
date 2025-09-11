@@ -16,7 +16,6 @@ export default function EditableTutorForm({ currentTutor }: Props) {
   const [status, setStatus] = useState(currentTutor.isActive);
   const [subjectVisibility, setSubjectVisibility] = useState<boolean>(false);
   const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
-  // REMOVE REDUDANCY const [selectedSubjects, setSelectedSubjects] = useState<Subject[]>([]);
 
   // Local state for tutorSubjects
   const [tutorSubjects, setTutorSubjects] = useState<TutorSubject[]>(
@@ -58,7 +57,12 @@ export default function EditableTutorForm({ currentTutor }: Props) {
   const handleUpdate = async () => {
     try {
       subjectOptionVisibility();
-      var updateFields = { email: email, isActive: status };
+      var updateFields = {
+        id: currentTutor.id,
+        email: email,
+        isActive: status,
+        tutorSubjects: tutorSubjects,
+      };
       await tutorService.updateTutor(currentTutor.id, updateFields);
       //setStatus("Updated successfully!");
     } catch (err) {
