@@ -19,14 +19,6 @@ export const tutorService = {
     return response.data;
   },
 
-  updateBasicTutor: async (
-    id: number,
-    tutor: Partial<Tutor>
-  ): Promise<Tutor> => {
-    const response = await backendApi.patch(`/tutors/${id}`, tutor);
-    return response.data;
-  },
-
   updateTutor: async (id: number, tutor: Partial<Tutor>): Promise<Tutor> => {
     const response = await backendApi.put(`/tutors/${id}`, tutor);
     return response.data;

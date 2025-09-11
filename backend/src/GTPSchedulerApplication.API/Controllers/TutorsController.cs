@@ -99,19 +99,6 @@ public class TutorsController : ControllerBase
         }
     }
 
-    [HttpPatch("{id}")] // only name and active status
-    public async Task<ActionResult> PatchTutor(int id, UpdateTutorPartialDto dto)
-    {
-        var tutor = await _context.Tutors.FindAsync(id);
-        if (tutor == null) return NotFound();
-
-        if (dto.Email is not null) tutor.Email = dto.Email;
-        if (dto.IsActive.HasValue) tutor.IsActive = dto.IsActive.Value;
-
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
-
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateTutor(int id, UpdateTutorDto dto)
     {
@@ -183,11 +170,6 @@ public record TutorDto(
     List<TutorSubjectDto> TutorSubjects, 
     List<TutorAvailabilityDto>? Availability
     );
-public class UpdateTutorPartialDto
-{
-    public string? Email { get; set; }
-    public bool? IsActive { get; set; }
-}
 public record UpdateTutorDto(
     int Id,
     string Email,
