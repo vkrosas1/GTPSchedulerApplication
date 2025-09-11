@@ -1,38 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Tutor, Subject, TutorSubject } from "../types";
-import { CirclePlus, CircleX } from "lucide-react";
 import Availability from "@/components/Availability";
-import { tutorService } from "@/services/tutorService";
+import { CirclePlus, CircleX } from "lucide-react";
+import { Tutor, Subject, TutorSubject } from "../types";
 import { subjectService } from "@/services/subjectService";
+import { tutorService } from "@/services/tutorService";
+import { useEffect, useState } from "react";
 
 type Props = {
   currentTutor: Tutor;
 };
 
 export default function EditableTutorForm({ currentTutor }: Props) {
+  /* States for sending PUT */
   const [email, setEmail] = useState(currentTutor.email);
   const [status, setStatus] = useState(currentTutor.isActive);
-  const [subjectVisibility, setSubjectVisibility] = useState<boolean>(false);
-  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
-
-  // Local state for tutorSubjects
   const [tutorSubjects, setTutorSubjects] = useState<TutorSubject[]>(
     currentTutor.tutorSubjects || []
   );
+  const [availability, setAvailability] = useState(currentTutor.availability);
 
+  /* States for editable form capabilities*/
+  const [subjectVisibility, setSubjectVisibility] = useState<boolean>(false);
+  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
+
+  /* Tutor status  */
   const statusChange = () => {
     setStatus(!status);
   };
 
-  const removeSubject = (ts: TutorSubject) => {
-    setTutorSubjects((prev) => {
-      var filtered = prev.filter((s) => s.subjectId !== ts.subjectId);
-      return filtered;
-    });
-  };
-
+  /* Subject Options */
   useEffect(() => {
     loadSubjects();
   }, []);
@@ -42,21 +39,29 @@ export default function EditableTutorForm({ currentTutor }: Props) {
       const data = await subjectService.getSubjects();
       setAllSubjects(data);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to load all subjects: ", err);
     }
   };
 
-  const subjectOptionVisibility = () => {
+  const onRemoveSubject = (ts: TutorSubject) => {
+    setTutorSubjects((prev) =>
+      prev.filter((s) => s.subjectId !== ts.subjectId)
+    );
+  };
+
+  const onViewSubjectsDropdown = () => {
     setSubjectVisibility(!subjectVisibility);
   };
 
+  // Available valid subjects to choose from
   const availableOptions = allSubjects.filter(
     (sub) => !tutorSubjects.some((sel) => sel.subjectId === sub.id)
   );
 
-  const handleUpdate = async () => {
+  /* PUT action */
+  const onHandleUpdate = async () => {
     try {
-      subjectOptionVisibility();
+      onViewSubjectsDropdown();
       var updateFields = {
         id: currentTutor.id,
         email: email,
@@ -102,7 +107,7 @@ export default function EditableTutorForm({ currentTutor }: Props) {
         <label className="text-lg font-semibold text-gray-900">
           Tutor Subjects
           {!subjectVisibility && (
-            <button onClick={subjectOptionVisibility}>
+            <button onClick={onViewSubjectsDropdown}>
               <CirclePlus size={16} className="ml-2" />
             </button>
           )}
@@ -144,7 +149,7 @@ export default function EditableTutorForm({ currentTutor }: Props) {
             >
               {ts.subjectName}
               <button
-                onClick={() => removeSubject(ts)}
+                onClick={() => onRemoveSubject(ts)}
                 aria-label={`Remove ${ts.subjectName}`}
               >
                 <CircleX
@@ -181,7 +186,7 @@ export default function EditableTutorForm({ currentTutor }: Props) {
       </div>
       <button
         className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-        onClick={handleUpdate}
+        onClick={onHandleUpdate}
       >
         Update Tutor
       </button>

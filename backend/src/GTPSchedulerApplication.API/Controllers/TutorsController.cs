@@ -78,7 +78,7 @@ public class TutorsController : ControllerBase
             .FirstOrDefaultAsync(t => t.Id == id);
             return tutor == null ? NotFound() : _mapper.Map<TutorDto>(tutor);
         }
-        catch (Exception ex) {
+        catch {
             throw new ApplicationException("Internal error");
         }
     }
