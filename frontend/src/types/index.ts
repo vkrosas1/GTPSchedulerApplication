@@ -66,14 +66,8 @@ export enum AssignmentStatus {
 }
 
 export interface DayAvailability {
-  day:
-    | "Monday"
-    | "Tuesday"
-    | "Wednesday"
-    | "Thursday"
-    | "Friday"
-    | "Saturday"
-    | "Sunday";
+  day: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday";
+  dayOfWeek: 1 | 2 | 3 | 4 | 5;
   enabled: boolean;
   startTime: string; // e.g., "09:00"
   endTime: string; // e.g., "17:00"

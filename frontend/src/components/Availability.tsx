@@ -1,13 +1,43 @@
 import { DayAvailability } from "@/types";
 import { useState } from "react";
 
-const Availability = () => {
+const Availability = ({ onSendAvailability }: { onSendAvailability: any }) => {
   const [availability, setAvailability] = useState<DayAvailability[]>([
-    { day: "Monday", enabled: false, startTime: "09:00", endTime: "17:00" },
-    { day: "Tuesday", enabled: false, startTime: "09:00", endTime: "17:00" },
-    { day: "Wednesday", enabled: false, startTime: "09:00", endTime: "17:00" },
-    { day: "Thursday", enabled: false, startTime: "09:00", endTime: "17:00" },
-    { day: "Friday", enabled: false, startTime: "09:00", endTime: "17:00" },
+    {
+      day: "Monday",
+      dayOfWeek: 1,
+      enabled: false,
+      startTime: "09:00",
+      endTime: "17:00",
+    },
+    {
+      day: "Tuesday",
+      dayOfWeek: 2,
+      enabled: false,
+      startTime: "09:00",
+      endTime: "17:00",
+    },
+    {
+      day: "Wednesday",
+      dayOfWeek: 3,
+      enabled: false,
+      startTime: "09:00",
+      endTime: "17:00",
+    },
+    {
+      day: "Thursday",
+      dayOfWeek: 4,
+      enabled: false,
+      startTime: "09:00",
+      endTime: "17:00",
+    },
+    {
+      day: "Friday",
+      dayOfWeek: 5,
+      enabled: false,
+      startTime: "09:00",
+      endTime: "17:00",
+    },
   ]);
 
   const handleToggleDay = (dayToToggle: string) => {
@@ -30,6 +60,7 @@ const Availability = () => {
           : day
       )
     );
+    onSendAvailability(availability);
   };
 
   return (

@@ -78,7 +78,7 @@ public class TutorsController : ControllerBase
             .FirstOrDefaultAsync(t => t.Id == id);
             return tutor == null ? NotFound() : _mapper.Map<TutorDto>(tutor);
         }
-        catch (Exception ex) {
+        catch {
             throw new ApplicationException("Internal error");
         }
     }
@@ -129,8 +129,6 @@ public class TutorsController : ControllerBase
         }));
         
         
-
-        /* Replace availability if not null
         if (tutor.Availability != null)
         {
         tutor.Availability.Clear();
@@ -142,7 +140,6 @@ public class TutorsController : ControllerBase
         })); 
 
         }
-        */
         await _context.SaveChangesAsync();
         return NoContent();
     }
@@ -174,8 +171,8 @@ public record UpdateTutorDto(
     int Id,
     string Email,
     bool IsActive,
-    List<TutorSubjectDto> TutorSubjects
-    //List<CreateTutorAvailabilityDto>? Availability
+    List<TutorSubjectDto> TutorSubjects,
+    List<TutorAvailabilityDto> Availability
 );
 
 
